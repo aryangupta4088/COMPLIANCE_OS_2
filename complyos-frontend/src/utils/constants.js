@@ -1,107 +1,42 @@
 export const dashboardSummary = {
   metrics: [
-    { label: "TOTAL COMPLIANCES", value: "128", badge: "↗ 12%" },
-    { label: "PENDING DEADLINES", value: "04", badge: "! Critical", danger: true },
-    { label: "SCHEMES MATCHED", value: "31", badge: "⊙ New" },
-    { label: "AMOUNT SAVED", value: "₹4.2M", badge: "^ Saved" },
+    { label: "Pending Deadlines", value: "3", badge: "Action needed", danger: true },
+    { label: "Active Schemes", value: "7", badge: "View all", danger: false },
+    { label: "Alerts", value: "2", badge: "Unread", danger: true },
+    { label: "Compliance Score", value: "87%", badge: "Good standing", danger: false },
   ],
   chart: [
-    { month: "JAN", value: 54 },
-    { month: "FEB", value: 76 },
-    { month: "MAR", value: 40 },
-    { month: "APR", value: 85 },
-    { month: "MAY", value: 63 },
-    { month: "JUN", value: 72 },
+    { month: "Jan", value: 4 }, { month: "Feb", value: 6 },
+    { month: "Mar", value: 3 }, { month: "Apr", value: 8 },
+    { month: "May", value: 5 }, { month: "Jun", value: 7 },
   ],
 };
 
-export const deadlines = [
-  {
-    id: "1",
-    title: "GST Monthly Filing",
-    deadline_date: "2024-11-10",
-    compliance_type: "GST",
-    urgency: "high",
-    description: "Submission of GSTR-1 for the month of October.",
-  },
-  {
-    id: "2",
-    title: "ESOP Disclosure",
-    deadline_date: "2024-11-10",
-    compliance_type: "Scheme",
-    urgency: "medium",
-    description: "Internal audit report for the employee stock pool.",
-  },
-  {
-    id: "3",
-    title: "Provident Fund Deposit",
-    deadline_date: "2024-11-10",
-    compliance_type: "Labour",
-    urgency: "medium",
-    description: "Mandatory contribution for the regional workforce.",
-  },
-  {
-    id: "4",
-    title: "Professional Tax Payment",
-    deadline_date: "2024-11-12",
-    compliance_type: "Tax",
-    urgency: "high",
-    description: "Due in 2 days",
-  },
-  {
-    id: "5",
-    title: "ROC Annual Return",
-    deadline_date: "2024-11-15",
-    compliance_type: "MCA",
-    urgency: "medium",
-    description: "Due in 5 days",
-  },
+export const INDIAN_STATES = [
+  "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
+  "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka",
+  "Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram",
+  "Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana",
+  "Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi","Jammu & Kashmir"
 ];
 
-export const schemes = [
-  {
-    scheme_name: "Startup India Seed Fund",
-    scheme_type: "grant",
-    max_benefit: "₹20,00,000",
-    eligibility_match_score: 91,
-    why_eligible: "Financial assistance for early-stage MSMEs.",
-  },
-  {
-    scheme_name: "MSME Credit Guarantee",
-    scheme_type: "loan",
-    max_benefit: "₹5,00,00,000",
-    eligibility_match_score: 88,
-    why_eligible: "Collateral-free credit support.",
-  },
-  {
-    scheme_name: "Mahila Co-operative Grant",
-    scheme_type: "grant",
-    max_benefit: "₹5,00,000",
-    eligibility_match_score: 75,
-    why_eligible: "Support for women-led businesses.",
-  },
-  {
-    scheme_name: "Green Energy Subsidy",
-    scheme_type: "subsidy",
-    max_benefit: "₹15,00,000",
-    eligibility_match_score: 94,
-    why_eligible: "Incentives for adopting clean energy.",
-  },
-  {
-    scheme_name: "EdTech Innovation Grant",
-    scheme_type: "grant",
-    max_benefit: "₹10,00,000",
-    eligibility_match_score: 62,
-    why_eligible: "Research funding for digital training.",
-  },
-  {
-    scheme_name: "Smart Factory Upgrade",
-    scheme_type: "loan",
-    max_benefit: "₹2,00,00,000",
-    eligibility_match_score: 85,
-    why_eligible: "Loan interest support for manufacturing upgrades.",
-  },
+export const BUSINESS_TYPES = [
+  { value: "shop", label: "Retail Shop" },
+  { value: "manufacturer", label: "Manufacturer" },
+  { value: "service", label: "Service Provider" },
+  { value: "food", label: "Food Business" },
+  { value: "trader", label: "Trader/Wholesaler" },
+  { value: "artisan", label: "Artisan/Craftsperson" },
+  { value: "other", label: "Other" },
 ];
+
+export const COMPLIANCE_TYPES = ["GST", "Income Tax", "Labour", "FSSAI", "Shop License", "PF/ESI", "Other"];
+
+export const TIER_FEATURES = {
+  free: ["ARIA Onboarding", "3 Scheme Recommendations", "Basic Calendar", "Document Upload (3)"],
+  growth: ["Everything in Free", "VEDA Document Intelligence", "Full SCOUT", "Alert Notifications", "1 CA Consultation/month"],
+  pro: ["Everything in Growth", "Multi-business Management", "CA Dashboard Access", "Priority Scheduling", "Unlimited Documents"],
+};
 
 export const notifications = [
   {
@@ -300,4 +235,12 @@ export const registrations = [
     portal: "NSDL/Protean e-Gov",
     status: "Not Started",
   },
+];
+
+export const deadlines = [
+  { id: "1", title: "GST Return Filing (GSTR-1)", deadline_date: "2026-06-15", compliance_type: "GST", status: "pending", urgency: "high" },
+  { id: "2", title: "Quarterly TDS Payment", deadline_date: "2026-06-30", compliance_type: "Income Tax", status: "pending", urgency: "medium" },
+  { id: "3", title: "ESIC Monthly Contribution", deadline_date: "2026-07-15", compliance_type: "Labour", status: "pending", urgency: "low" },
+  { id: "4", title: "Shop License Renewal", deadline_date: "2026-08-01", compliance_type: "Shop License", status: "pending", urgency: "medium" },
+  { id: "5", title: "Annual Audit Report Filing", deadline_date: "2026-09-30", compliance_type: "Accounting", status: "pending", urgency: "high" },
 ];

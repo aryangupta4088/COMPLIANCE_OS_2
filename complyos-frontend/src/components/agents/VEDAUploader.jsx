@@ -1,83 +1,53 @@
-import React, { useState } from 'react';
-import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useRef } from "react";
+import { motion } from "framer-motion";
+import { Upload, FileText, Loader, CheckCircle } from "lucide-react";
+import { useVEDA } from "../../hooks/useVEDA";
 
-export const VEDAUploader = ({ onUpload, isLoading }) => {
-  const [dragOver, setDragOver] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+export function VEDAUploader({ onComplete }) {
+  const { uploading, result, error, processDocument } = useVEDA();
+  const inputRef = useRef(null);
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragOver(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    const files = e.dataTransfer.files;
-    handleFiles(files);
-  };
-
-  const handleFileChange = (e) => {
-    handleFiles(e.target.files);
-  };
-
-  const handleFiles = async (files) => {
-    for (const file of files) {
-      if (!isLoading && onUpload) {
-        onUpload(file);
-        setUploadedFiles((prev) => [...prev, { name: file.name, status: 'processing' }]);
-      }
-    }
+  const handleFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const data = await processDocument(file);
+    if (data) onComplete?.(data);
   };
 
   return (
-    <div className="space-y-4">
-      <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition ${
-          dragOver ? 'border-cs-600 bg-cs-50' : 'border-cs-300'
+    <div>
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        onClick={() => !uploading && inputRef.current?.click()}
+        className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-colors ${
+          uploading ? "border-cs-300 bg-cs-50" : "border-cs-200 hover:border-cs-400 bg-white"
         }`}
       >
-        <Upload className="w-12 h-12 mx-auto mb-3 text-cs-400" />
-        <p className="text-cs-900 font-medium mb-1">Drag documents here or click to browse</p>
-        <p className="text-sm text-cs-600 mb-4">Supported: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG</p>
-        <input
-          type="file"
-          multiple
-          onChange={handleFileChange}
-          disabled={isLoading}
-          className="hidden"
-          id="veda-uploader"
-        />
-        <label htmlFor="veda-uploader">
-          <button
-            onClick={() => document.getElementById('veda-uploader').click()}
-            disabled={isLoading}
-            className="px-4 py-2 bg-cs-600 text-white rounded-lg hover:bg-cs-700 disabled:opacity-50 transition cursor-pointer"
-          >
-            {isLoading ? 'Uploading...' : 'Select Files'}
-          </button>
-        </label>
-      </div>
-
-      {uploadedFiles.length > 0 && (
-        <div className="space-y-2">
-          <h4 className="font-medium text-cs-900">Uploads</h4>
-          {uploadedFiles.map((file, index) => (
-            <div key={index} className="flex items-center gap-3 p-3 bg-cs-50 rounded-lg">
-              <FileText className="w-5 h-5 text-cs-600" />
-              <span className="flex-1 text-sm text-cs-900">{file.name}</span>
-              {file.status === 'processing' ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cs-600"></div>
-              ) : (
-                <CheckCircle className="w-5 h-5 text-green-600" />
-              )}
+        <input ref={inputRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFile} />
+        {uploading ? (
+          <div className="flex flex-col items-center gap-3">
+            <Loader size={28} className="text-cs-500 animate-spin" />
+            <p className="text-cs-600 font-semibold text-sm">VEDA is analyzing your document...</p>
+            <p className="text-cs-400 text-xs">Extracting deadlines, numbers, and key data</p>
+          </div>
+        ) : result ? (
+          <div className="flex flex-col items-center gap-3">
+            <CheckCircle size={28} className="text-green-500" />
+            <p className="text-cs-900 font-bold text-sm">Analysis Complete!</p>
+            <p className="text-cs-500 text-xs">{result.deadlines_found} deadlines found and added to calendar</p>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-3">
+            <Upload size={28} className="text-cs-400" />
+            <p className="text-cs-700 font-semibold text-sm">Upload GST cert, PAN card, invoice, or any compliance doc</p>
+            <p className="text-cs-400 text-xs">PDF, JPG, PNG supported • VEDA reads even handwritten documents</p>
+          </div>
+        )}
+      </motion.div>
+      {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+    </div>
+  );
+}
             </div>
           ))}
         </div>

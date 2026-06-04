@@ -1,23 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell } from "lucide-react";
+import { Shield, X, ArrowRight } from "lucide-react";
+
+const DEMO_ALERTS = [
+  { id: 1, message: "New GST circular affects textile businesses in UP. Filing deadline moves from 15th this quarter.", urgency: "high" },
+  { id: 2, message: "Labour Code 2026 update: State-specific minimum wage revision effective July 1st.", urgency: "medium" },
+];
 
 export function SentinelAlert() {
+  const [alerts, setAlerts] = useState(DEMO_ALERTS);
+  const [current, setCurrent] = useState(0);
+
+  if (alerts.length === 0) return null;
+
   return (
     <motion.div
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -60, opacity: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="fixed top-16 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-cs-900 text-cs-50 rounded-full px-4 py-2 text-sm font-semibold shadow-lg"
+      className={`mx-6 mt-6 rounded-2xl border px-5 py-4 flex items-center gap-4 ${
+        alerts[current]?.urgency === "high"
+          ? "bg-red-50 border-red-200"
+          : "bg-amber-50 border-amber-200"
+      }`}
     >
-      <motion.span
-        animate={{ rotate: [0, -14, 12, -8, 8, 0] }}
-        transition={{ duration: 0.8, repeat: 1 }}
-      >
-        <Bell size={15} />
-      </motion.span>
-      SENTINEL regulatory update detected
+      <Shield size={18} className={alerts[current]?.urgency === "high" ? "text-red-600" : "text-amber-600"} />
+      <p className={`flex-1 text-sm font-semibold ${alerts[current]?.urgency === "high" ? "text-red-800" : "text-amber-800"}`}>
+        <span className="font-black">SENTINEL: </span>{alerts[current]?.message}
+      </p>
+      <button className="flex items-center gap-1 text-xs font-bold text-cs-600 hover:text-cs-900">
+        View <ArrowRight size={12} />
+      </button>
+      <button onClick={() => setAlerts(a => a.filter((_, i) => i !== current))} className="text-cs-400 hover:text-cs-700">
+        <X size={16} />
+      </button>
     </motion.div>
   );
 }

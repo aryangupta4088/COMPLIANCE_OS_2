@@ -1,33 +1,32 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { motion as m } from "framer-motion";
-import { AlertTriangle, Clock, Info, Shield } from "lucide-react";
-import { Button } from "./Common";
+import { AlertTriangle, Info, CheckCircle } from "lucide-react";
+import { formatDate } from "../../utils/helpers";
 
-const urgencyConfig = {
-  high:   { border: "border-l-cs-900", icon: AlertTriangle, iconBg: "bg-cs-900/10", iconColor: "text-cs-900" },
-  medium: { border: "border-l-cs-700", icon: Clock,          iconBg: "bg-cs-200",    iconColor: "text-cs-700" },
-  low:    { border: "border-l-cs-500", icon: Info,           iconBg: "bg-cs-100",    iconColor: "text-cs-500" },
-  info:   { border: "border-l-cs-400", icon: Shield,         iconBg: "bg-cs-100",    iconColor: "text-cs-400" },
+const ICONS = {
+  high: <AlertTriangle size={14} className="text-red-500" />,
+  medium: <Info size={14} className="text-amber-500" />,
+  low: <CheckCircle size={14} className="text-green-500" />,
 };
 
-/**
- * @param {{ title: string, description?: string, urgency: 'high'|'medium'|'low'|'info', source?: string, timestamp?: string, actionLabel?: string, onAction?: Function, isSentinel?: boolean }} props
- */
-export default function NoticeRow({
-  title,
-  description,
-  urgency = "info",
-  source,
-  timestamp,
-  actionLabel,
-  onAction,
-  isSentinel = false,
-}) {
-  const cfg = urgencyConfig[urgency] ?? urgencyConfig.info;
-  const Icon = cfg.icon;
-
-  const urgencyLabels = {
+export default function NoticeRow({ notice, onRead }) {
+  return (
+    <motion.div
+      whileHover={{ x: 4 }}
+      onClick={() => onRead?.(notice.id)}
+      className={`flex items-start gap-4 px-5 py-4 rounded-xl cursor-pointer transition-colors ${
+        notice.is_read ? "bg-transparent" : "bg-cs-50"
+      }`}
+    >
+      <div className="mt-0.5">{ICONS[notice.urgency] || ICONS.low}</div>
+      <div className="flex-1 min-w-0">
+        <p className={`text-sm font-semibold ${notice.is_read ? "text-cs-600" : "text-cs-900"}`}>{notice.title}</p>
+        <p className="text-cs-400 text-xs mt-0.5 truncate">{notice.message}</p>
+      </div>
+      <div className="text-cs-400 text-xs flex-shrink-0">{formatDate(notice.created_at)}</div>
+    </motion.div>
+  );
+}
     high:   { text: "URGENT",     bg: "bg-cs-900 text-cs-50" },
     medium: { text: "7 DAYS",     bg: "bg-cs-200 text-cs-700" },
     low:    { text: "NEW SCHEME", bg: "bg-cs-100 text-cs-600" },

@@ -1,47 +1,25 @@
 import React from "react";
-import {
-  CheckCircle2,
-  Clock,
-  X,
-  Star,
-  Sparkles,
-} from "lucide-react";
 
-const statusMap = {
-  completed:  { label: "Completed",  icon: CheckCircle2, classes: "bg-cs-100 text-cs-700" },
-  verified:   { label: "Verified",   icon: CheckCircle2, classes: "bg-cs-100 text-cs-700" },
-  enrolled:   { label: "Enrolled",   icon: CheckCircle2, classes: "bg-cs-100 text-cs-700" },
-  pending:    { label: "Pending",    icon: Clock,        classes: "bg-cs-200 text-cs-700 animate-pulse" },
-  processing: { label: "Processing", icon: Clock,        classes: "bg-cs-200 text-cs-700 animate-pulse" },
-  overdue:    { label: "Overdue",    icon: X,            classes: "bg-cs-900 text-cs-50" },
-  rejected:   { label: "Rejected",   icon: X,            classes: "bg-cs-900 text-cs-50" },
-  eligible:   { label: "Eligible",   icon: Star,         classes: "bg-cs-200 text-cs-800" },
-  active:     { label: "Active",     icon: Star,         classes: "bg-cs-200 text-cs-800" },
-  new:        { label: "New",        icon: Sparkles,     classes: "bg-cs-800 text-cs-50" },
-  complete:   { label: "Complete",   icon: CheckCircle2, classes: "bg-cs-100 text-cs-700" },
-  "not started": { label: "Not Started", icon: X, classes: "bg-cs-100 text-cs-500" },
+const STATUS_STYLES = {
+  pending:   "bg-amber-50 text-amber-700 border-amber-200",
+  done:      "bg-green-50 text-green-700 border-green-200",
+  overdue:   "bg-red-50 text-red-600 border-red-200",
+  high:      "bg-red-50 text-red-600 border-red-200",
+  medium:    "bg-amber-50 text-amber-700 border-amber-200",
+  low:       "bg-green-50 text-green-700 border-green-200",
+  applied:   "bg-blue-50 text-blue-700 border-blue-200",
+  enrolled:  "bg-green-50 text-green-700 border-green-200",
+  eligible:  "bg-cs-100 text-cs-700 border-cs-200",
+  free:      "bg-cs-100 text-cs-700 border-cs-200",
+  growth:    "bg-amber-50 text-amber-700 border-amber-200",
+  pro:       "bg-purple-50 text-purple-700 border-purple-200",
 };
 
-const sizeMap = {
-  sm: { badge: "px-2 py-0.5 text-xs", icon: 11 },
-  md: { badge: "px-3 py-1 text-sm",   icon: 14 },
-};
-
-/**
- * @param {{ status: string, size?: 'sm'|'md' }} props
- */
-export default function StatusBadge({ status = "pending", size = "sm" }) {
-  const key = status.toLowerCase();
-  const cfg = statusMap[key] ?? statusMap.pending;
-  const Icon = cfg.icon;
-  const sz = sizeMap[size] ?? sizeMap.sm;
-
+export default function StatusBadge({ status, label }) {
+  const style = STATUS_STYLES[status?.toLowerCase()] || "bg-cs-100 text-cs-600 border-cs-200";
   return (
-    <span
-      className={`inline-flex items-center gap-1 font-semibold rounded-full tracking-wide ${sz.badge} ${cfg.classes}`}
-    >
-      <Icon size={sz.icon} />
-      {cfg.label}
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${style}`}>
+      {label || status}
     </span>
   );
 }

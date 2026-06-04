@@ -1,43 +1,23 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import { getToken, getRole, getUserId, setToken, setRole, setUserId, clearAuth } from "../utils/helpers";
 
 const useAuthStore = create((set) => ({
-  user: null,
-  token: null,
-  isLoggedIn: false,
-  isLoading: false,
-  error: null,
+  token: getToken(),
+  role: getRole(),
+  userId: getUserId(),
+  isAuthenticated: !!getToken(),
 
-  setUser: (user) => set({ user }),
-  setToken: (token) => set({ token }),
-  setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
-  setIsLoading: (isLoading) => set({ isLoading }),
-  setError: (error) => set({ error }),
-
-  login: async (email, password) => {
-    set({ isLoading: true, error: null });
-    try {
-      // API call will be added here
-      set({ isLoading: false });
-    } catch (error) {
-      set({ isLoading: false, error: error.message });
-    }
+  login: (token, role, userId) => {
+    setToken(token);
+    setRole(role);
+    setUserId(userId);
+    set({ token, role, userId, isAuthenticated: true });
   },
 
   logout: () => {
-    set({ user: null, token: null, isLoggedIn: false });
+    clearAuth();
+    set({ token: null, role: null, userId: null, isAuthenticated: false });
   },
-
-  register: async (userData) => {
-    set({ isLoading: true, error: null });
-    try {
-      // API call will be added here
-      set({ isLoading: false });
-    } catch (error) {
-      set({ isLoading: false, error: error.message });
-    }
-  },
-
-  clearError: () => set({ error: null }),
 }));
 
 export default useAuthStore;

@@ -1,83 +1,49 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Star, CheckCircle2 } from "lucide-react";
-import { Avatar, Button } from "./Common";
+import { Star, MapPin, Clock } from "lucide-react";
 
-/**
- * @param {{ name: string, specializations?: string[], rating?: number, clientCount?: string, pricePerConsultation?: string|number, verified?: boolean, isAssigned?: boolean, onBook?: Function }} props
- */
-export default function CACard({
-  name,
-  specializations = [],
-  rating = 0,
-  clientCount,
-  pricePerConsultation,
-  verified = false,
-  isAssigned = false,
-  onBook,
-}) {
-  const initials = name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
-
+export default function CACard({ ca, onBook }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.25 }}
-      className={`bg-white border rounded-2xl flex flex-col ${
-        isAssigned ? "border-cs-800 p-6" : "border-cs-100 p-5"
-      }`}
+      whileHover={{ scale: 1.02, boxShadow: "0 8px 32px rgba(21,27,30,0.10)" }}
+      className="bg-white border border-cs-100 rounded-2xl p-6 flex flex-col gap-4"
     >
-      {/* "Your CA" badge */}
-      {isAssigned && (
-        <span className="self-start mb-3 text-xs font-bold px-2.5 py-1 rounded-full bg-cs-800 text-cs-50 tracking-widest">
-          YOUR CA
-        </span>
-      )}
-
-      {/* Avatar + rating */}
-      <div className="flex items-start justify-between">
-        <div className="relative">
-          <div className="w-12 h-12 rounded-full bg-cs-200 flex items-center justify-center font-bold text-cs-800 text-sm">
-            {initials}
+      <div className="flex items-start gap-4">
+        <div className="w-14 h-14 rounded-full bg-cs-200 flex items-center justify-center font-bold text-cs-800 text-xl flex-shrink-0">
+          {ca.name?.split(" ").map(w => w[0]).join("").slice(0,2)}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-cs-900">{ca.name}</h3>
+          <p className="text-cs-500 text-xs">{ca.firm_name}</p>
+          <div className="flex items-center gap-1 mt-1">
+            <Star size={12} className="text-amber-500 fill-amber-500" />
+            <span className="text-cs-700 text-xs font-bold">{ca.rating}</span>
+            <span className="text-cs-400 text-xs">({ca.reviews_count} reviews)</span>
           </div>
-          {verified && (
-            <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-cs-800 flex items-center justify-center">
-              <CheckCircle2 size={11} className="text-cs-50" />
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-1 text-cs-500">
-          <Star size={13} />
-          <span className="text-xs font-semibold text-cs-500">{rating}</span>
         </div>
       </div>
-
-      {/* Name + client count */}
-      <div className="mt-3">
-        <p className="font-bold text-cs-900 text-base">{name}</p>
-        {clientCount && (
-          <p className="text-cs-500 text-xs mt-0.5">{clientCount}</p>
-        )}
+      <div className="flex flex-wrap gap-1.5">
+        {(ca.specializations || []).slice(0,3).map(s => (
+          <span key={s} className="bg-cs-50 border border-cs-100 text-cs-600 text-xs px-2 py-0.5 rounded-full font-medium">{s}</span>
+        ))}
       </div>
-
-      {/* Specialization tags */}
-      {specializations.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {specializations.map((s) => (
-            <span
-              key={s}
-              className="px-2 py-0.5 rounded-md bg-cs-100 text-cs-600 text-xs font-semibold tracking-wide"
-            >
-              {s}
-            </span>
-          ))}
+      <div className="flex items-center justify-between text-xs text-cs-500">
+        <span className="flex items-center gap-1"><MapPin size={11} /> {(ca.states_covered || [])[0]}</span>
+        <span className="flex items-center gap-1"><Clock size={11} /> Response: 2h</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-cs-900 font-bold">₹{ca.consultation_fee}/hr</span>
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={() => onBook?.(ca)}
+          className="bg-cs-800 text-cs-50 px-5 py-2 rounded-xl text-sm font-semibold"
+        >
+          Book Now
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+}
         </div>
       )}
 

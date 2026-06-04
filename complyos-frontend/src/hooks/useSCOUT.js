@@ -1,44 +1,32 @@
-import { useState, useCallback } from 'react';
+import { useState } from "react";
+import { apiFetch } from "../services/api";
 
-export const useSCOUT = () => {
+export function useSCOUT() {
   const [schemes, setSchemes] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchSchemes = useCallback(async () => {
-    setIsLoading(true);
+  const fetchSchemes = async () => {
+    setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${process.env.VITE_API_URL}/schemes`);
-      const data = await response.json();
-      setSchemes(data);
-    } catch (err) {
-      setError(err.message);
+      const data = await apiFetch("/api/schemes/recommended");
+      setSchemes(data.schemes || []);
+    } catch (e) {
+      setError("Could not load schemes. Please try again.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  }, []);
+  };
 
-  const analyzeSchemes = useCallback(async (businessData) => {
-    setIsLoading(true);
-    setError(null);
+  const applyForScheme = async (schemeName) => {
     try {
-      const response = await fetch(`${process.env.VITE_API_URL}/scout/analyze`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(businessData),
-      });
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      setError(err.message);
-      return null;
-    } finally {
-      setIsLoading(false);
+      await apiFetch(`/api/schemes/apply/${encodeURIComponent(schemeName)}`, { method: "POST" });
+      return true;
+    } catch {
+      return false;
     }
-  }, []);
+  };
 
-  return { schemes, isLoading, error, fetchSchemes, analyzeSchemes };
-};
-
-export default useSCOUT;
+  return { schemes, loading, error, fetchSchemes, applyForScheme };
+}

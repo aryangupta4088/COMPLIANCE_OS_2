@@ -1,92 +1,43 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { Search, Bell, HelpCircle, Scale } from "lucide-react";
-import { ComplianceChatbot } from "./ComplianceChatbot"; // adjust path as needed
+import React from "react";
+import { motion } from "framer-motion";
+import { Menu, Bell, Search, ChevronDown } from "lucide-react";
+import { getInitials } from "../../utils/helpers";
+import useNotificationStore from "../../store/notificationStore";
 
-export function Topbar({ dark = false }) {
-  const [chatOpen, setChatOpen] = useState(false);
-
+export default function Topbar({ onMenuClick }) {
+  const unreadCount = useNotificationStore(s => s.unreadCount);
+  
   return (
-    <>
-      <header
-        className={`h-14 flex items-center justify-between px-6 border-b ${dark
-            ? "bg-cs-900 border-cs-800 text-cs-50"
-            : "bg-white border-cs-100 text-cs-900"
-          }`}
-      >
-        {/* Brand */}
-        <NavLink
-          to="/dashboard"
-          className="font-extrabold text-lg tracking-tight"
-        >
-          ComplianceOS
-        </NavLink>
+    <header className="h-16 bg-white border-b border-cs-100 flex items-center gap-4 px-6 flex-shrink-0">
+      <button onClick={onMenuClick} className="lg:hidden text-cs-600 hover:text-cs-900">
+        <Menu size={22} />
+      </button>
 
-        {/* Center links */}
-        <div
-          className={`hidden md:flex items-center gap-6 text-sm font-medium ${dark ? "text-cs-300" : "text-cs-500"
-            }`}
-        >
-          <NavLink to="/notices" className="hover:text-cs-900 transition-colors">
-            Marketplace
-          </NavLink>
-          <NavLink to="/calendar" className="hover:text-cs-900 transition-colors">
-            Calendar
-          </NavLink>
-          <NavLink to="/documents" className="hover:text-cs-900 transition-colors">
-            Document Vault
-          </NavLink>
-        </div>
+      {/* Search */}
+      <div className="flex-1 max-w-md hidden sm:flex items-center gap-2 bg-cs-50 border border-cs-100 rounded-xl px-4 py-2">
+        <Search size={16} className="text-cs-400" />
+        <input placeholder="Search deadlines, schemes..." className="bg-transparent text-sm outline-none text-cs-900 placeholder:text-cs-400 flex-1" />
+      </div>
 
-        {/* Right actions */}
-        <div className="flex items-center gap-3">
-          {/* Search */}
-          <div
-            className={`flex items-center gap-2 rounded-full px-4 h-8 text-sm ${dark ? "bg-cs-800 text-cs-300" : "bg-cs-50 text-cs-400"
-              }`}
-          >
-            <Search size={14} />
-            <input
-              placeholder="Search..."
-              className="bg-transparent outline-none text-sm w-32 placeholder:text-cs-400"
-            />
+      <div className="ml-auto flex items-center gap-3">
+        {/* Notifications */}
+        <motion.button whileTap={{ scale: 0.95 }} className="relative w-9 h-9 bg-cs-50 border border-cs-100 rounded-xl flex items-center justify-center text-cs-600 hover:text-cs-900">
+          <Bell size={16} />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </motion.button>
+
+        {/* User */}
+        <div className="flex items-center gap-2 cursor-pointer">
+          <div className="w-8 h-8 bg-cs-700 rounded-full flex items-center justify-center text-cs-50 text-xs font-bold">
+            {getInitials("My Business")}
           </div>
-
-          <Bell
-            size={18}
-            className={dark ? "text-cs-300" : "text-cs-500"}
-          />
-          <HelpCircle
-            size={18}
-            className={dark ? "text-cs-300" : "text-cs-500"}
-          />
-
-          {/* ── CABot trigger button ── */}
-          <button
-            onClick={() => setChatOpen((v) => !v)}
-            title="Ask CABot"
-            className={`relative flex items-center gap-1.5 rounded-full px-3 h-8 text-xs font-semibold transition-all ${chatOpen
-                ? "bg-cs-900 text-amber-400 shadow-md"
-                : dark
-                  ? "bg-cs-800 text-amber-400 hover:bg-cs-700"
-                  : "bg-cs-900 text-amber-400 hover:bg-cs-700 shadow-sm"
-              }`}
-          >
-            <Scale size={13} />
-            <span className="hidden sm:inline">Ask CA</span>
-            {/* Pulse dot */}
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border-2 border-white animate-pulse" />
-          </button>
-
-          {/* Avatar */}
-          <div className="w-8 h-8 rounded-full bg-cs-200 flex items-center justify-center text-xs font-bold text-cs-800">
-            JD
-          </div>
+          <ChevronDown size={14} className="text-cs-400 hidden sm:block" />
         </div>
-      </header>
-
-      {/* Chatbot panel — rendered outside header so it overlays full page */}
-      <ComplianceChatbot open={chatOpen} onClose={() => setChatOpen(false)} />
-    </>
+      </div>
+    </header>
   );
 }
