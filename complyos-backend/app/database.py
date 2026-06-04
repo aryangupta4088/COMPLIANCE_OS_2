@@ -1,29 +1,31 @@
-from motor.motor_asyncio import AsyncClient, AsyncDatabase
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.orm import DeclarativeBase
 from app.config import settings
-from typing import Optional
 
-client: Optional[AsyncClient] = None
-db: Optional[AsyncDatabase] = None
+engine = create_async_engine(settings.DATABASE_URL, echo=False)
+AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-async def connect_to_mongo():
-    global client, db
-    try:
-        client = AsyncClient(settings.MONGODB_URL)
-        db = client[settings.DATABASE_NAME]
-        # Verify connection
-        await db.command("ping")
-        print("✅ Connected to MongoDB")
-    except Exception as e:
-        print(f"❌ Failed to connect to MongoDB: {e}")
-        raise
+class Base(DeclarativeBase):
+    pass
 
-async def close_mongo_connection():
-    global client
-    if client:
-        client.close()
-        print("❌ Disconnected from MongoDB")
+try:
+    from motor.motor_asyncio import AsyncIOMotorClient
+    mongo_client = AsyncIOMotorClient(settings.MONGODB_URL, serverSelectionTimeoutMS=3000)
+    mongo_db = mongo_client[settings.MONGODB_DB]
+except Exception:
+    mongo_db = None
 
-def get_database() -> AsyncDatabase:
-    if db is None:
-        raise RuntimeError("Database not initialized. Call connect_to_mongo first.")
-    return db
+try:
+    import redis.asyncio as redis
+    redis_client = redis.from_url(settings.REDIS_URL)
+except Exception:
+    redis_client = None
+
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+async def init_db():
+    from app.models import user, business, compliance, scheme, notification, document, ca
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)

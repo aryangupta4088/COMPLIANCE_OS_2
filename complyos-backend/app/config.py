@@ -2,46 +2,29 @@ from pydantic_settings import BaseSettings
 from typing import Optional
 
 class Settings(BaseSettings):
-    # App
-    APP_NAME: str = "ComplianceOS Backend"
-    DEBUG: bool = True
-    
-    # Database
-    MONGODB_URL: str
-    DATABASE_NAME: str = "complyos"
-    
-    # Redis
-    REDIS_URL: str = "redis://localhost:6379"
-    
-    # JWT
-    SECRET_KEY: str
+    APP_NAME: str = "ComplianceOS"
+    SECRET_KEY: str = "dev-secret-key-change-in-production"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    
-    # External APIs
-    GROQ_API_KEY: str
-    
-    # AWS S3 / Cloudflare R2
-    R2_ACCESS_KEY: str
-    R2_SECRET_KEY: str
-    R2_BUCKET_NAME: str
-    R2_ENDPOINT_URL: str
-    
-    # File Upload
-    MAX_FILE_SIZE: int = 10485760  # 10MB
-    ALLOWED_EXTENSIONS: list = ["pdf", "doc", "docx", "xls", "xlsx", "png", "jpg", "jpeg"]
-    
-    # CORS
-    CORS_ORIGINS: list = ["http://localhost:5173", "http://localhost:3000"]
-    
-    # Email
-    SMTP_SERVER: Optional[str] = None
-    SMTP_PORT: Optional[int] = None
-    SMTP_USERNAME: Optional[str] = None
-    SMTP_PASSWORD: Optional[str] = None
-    
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
+
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/complyos_db"
+    MONGODB_URL: str = "mongodb://localhost:27017"
+    MONGODB_DB: str = "complyos_docs"
+    REDIS_URL: str = "redis://localhost:6379/0"
+
+    GROQ_API_KEY: str = ""
+    GROQ_MODEL: str = "llama-3.1-70b-versatile"
+
+    R2_ACCOUNT_ID: Optional[str] = None
+    R2_ACCESS_KEY_ID: Optional[str] = None
+    R2_SECRET_ACCESS_KEY: Optional[str] = None
+    R2_BUCKET_NAME: str = "complyos-vault"
+    R2_ENDPOINT_URL: Optional[str] = None
+
+    FRONTEND_URL: str = "http://localhost:5173"
+
     class Config:
         env_file = ".env"
-        case_sensitive = True
+        env_file_encoding = "utf-8"
 
 settings = Settings()

@@ -1,47 +1,40 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import connect_to_mongo, close_mongo_connection
-from app.config import settings
 from app.routers import (
-    auth, ws_aria, business, compliance, documents, ca, loans,
-    freelancers, notifications, registration, admin, schemes, dashboard
+    auth, documents, compliance, ws_aria,
+    business, ca, loans, freelancers, 
+    notifications, registration, admin,schemes
 )
+from app.database import init_db
 
-app = FastAPI(title=settings.APP_NAME)
+app = FastAPI(title="ComplianceOS API")
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
-# Event handlers
 @app.on_event("startup")
 async def startup():
-    await connect_to_mongo()
+    await init_db()
 
-@app.on_event("shutdown")
-async def shutdown():
-    await close_mongo_connection()
-
-# Include routers
-app.include_router(auth.router)
+app.include_router(auth.router, prefix="/auth")
+app.include_router(documents.router, prefix="/api")
+app.include_router(compliance.router, prefix="/api")
+app.include_router(business.router, prefix="/api")
+app.include_router(ca.router, prefix="/api")
+app.include_router(loans.router, prefix="/api")
+app.include_router(freelancers.router, prefix="/api")
+app.include_router(notifications.router, prefix="/api")
+app.include_router(registration.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
 app.include_router(ws_aria.router)
-app.include_router(business.router)
-app.include_router(compliance.router)
-app.include_router(documents.router)
-app.include_router(ca.router)
-app.include_router(loans.router)
-app.include_router(freelancers.router)
-app.include_router(notifications.router)
-app.include_router(registration.router)
-app.include_router(admin.router)
-app.include_router(schemes.router)
-app.include_router(dashboard.router)
+app.include_router(schemes.router, prefix="/api")
 
 @app.get("/health")
-async def health_check():
-    return {"status": "ok"}
+async def health():
+    return {"status": "operational"}
