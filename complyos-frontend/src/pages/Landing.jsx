@@ -505,16 +505,37 @@ export default function Landing() {
         <span className="font-extrabold text-cs-900 text-lg tracking-tight">ComplianceOS</span>
 
         <div className="hidden md:flex items-center gap-8 text-cs-500 text-sm font-medium">
-          <a className="hover:text-cs-900 cursor-pointer">Features</a>
-          <a className="hover:text-cs-900 cursor-pointer">How it Works</a>
-          <a className="hover:text-cs-900 cursor-pointer">Pricing</a>
+          <a 
+            onClick={() => document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="hover:text-cs-900 cursor-pointer"
+          >
+            Features
+          </a>
+          
+          {/* How it Works Link */}
+          <a 
+            onClick={() => document.getElementById('how-it-works-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="hover:text-cs-900 cursor-pointer"
+          >
+            How it Works
+          </a>
+          
+          {/* Pricing Link */}
+          <a 
+            onClick={() => document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="hover:text-cs-900 cursor-pointer"
+          >
+            Pricing
+          </a>
+  
 
           {/* Role toggle pill */}
           <div className="flex items-center bg-cs-100 rounded-full p-0.5 text-xs font-bold gap-0">
             <button
               onClick={() => setViewAs("business")}
-              className={`px-3 py-1.5 rounded-full transition-all ${viewAs === "business" ? "bg-white text-cs-900 shadow-sm" : "text-cs-500"
-                }`}
+              className={`px-3 py-1.5 rounded-full transition-all ${
+                viewAs === "business" ? "bg-white text-cs-900 shadow-sm" : "text-cs-500"
+              }`}
             >
               Business
             </button>
@@ -703,74 +724,74 @@ export default function Landing() {
 
         <div className="relative z-10 max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
-          <motion.div
-            key={viewAs}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-          >
-            {viewAs === "ca" ? (
-              <>
-                <span className="inline-block bg-violet-900/60 text-violet-200 text-xs font-bold tracking-widest px-3 py-1 rounded-full mb-6 uppercase border border-violet-700">
-                  For Chartered Accountants
-                </span>
-                <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-none mx-auto max-w-4xl mb-6">
-                  One dashboard.<br className="hidden md:block" /> Every client sorted.
-                </h1>
-                <p className="text-cs-300 text-lg max-w-xl mx-auto mb-10">
-                  See compliance calendars, approve filings, and catch deadlines across all your clients — without a single spreadsheet.
-                </p>
-                <div className="flex gap-4 justify-center">
-                  <Button variant="secondary" size="lg" onClick={() => openModal("ca")}>
-                    Start 14-Day Free Trial
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="!border-cs-600 !text-cs-200 hover:!bg-cs-800"
-                    onClick={() => { setToken(DEMO_USERS.ca.token); setRole(DEMO_USERS.ca.role); setUserId(DEMO_USERS.ca.userId); navigate("/ca-dashboard"); }}
+            <motion.div
+              key={viewAs}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+            >
+              {viewAs === "ca" ? (
+                <>
+                  <span className="inline-block bg-violet-900/60 text-violet-200 text-xs font-bold tracking-widest px-3 py-1 rounded-full mb-6 uppercase border border-violet-700">
+                    For Chartered Accountants
+                  </span>
+                  <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-none mx-auto max-w-4xl mb-6">
+                    One dashboard.<br className="hidden md:block" /> Every client sorted.
+                  </h1>
+                  <p className="text-cs-300 text-lg max-w-xl mx-auto mb-10">
+                    See compliance calendars, approve filings, and catch deadlines across all your clients — without a single spreadsheet.
+                  </p>
+                  <div className="flex gap-4 justify-center">
+                    <Button variant="secondary" size="lg" onClick={() => openModal("ca")}>
+                      Start 14-Day Free Trial
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="!border-cs-600 !text-cs-200 hover:!bg-cs-800"
+                      onClick={() => { setToken(DEMO_USERS.ca.token); setRole(DEMO_USERS.ca.role); setUserId(DEMO_USERS.ca.userId); navigate("/ca-dashboard"); }}
+                    >
+                      View CA Demo
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <motion.h1
+                    initial={{ opacity: 0, y: 28 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45 }}
+                    className="text-5xl md:text-7xl font-extrabold tracking-tight leading-none mx-auto max-w-5xl mb-6"
                   >
-                    View CA Demo
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <motion.h1
-                  initial={{ opacity: 0, y: 28 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45 }}
-                  className="text-5xl md:text-7xl font-extrabold tracking-tight leading-none mx-auto max-w-5xl mb-6"
-                >
-                  Automate your<br className="hidden md:block" /> {currentTypingText}
-                  <span className="inline-block w-[4px] h-[1em] bg-cs-50 ml-1 -mb-1 animate-pulse"></span>
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: 0.1 }}
-                  className="text-cs-300 text-lg max-w-xl mx-auto mb-10"
-                >
-                  One app for GST, Udyam, schemes, loans, and every deadline — built for India's 6 crore small businesses.
-                </motion.p>
-                <div className="flex gap-4 justify-center flex-wrap">
-                  <Button variant="secondary" size="lg" onClick={() => navigate("/onboarding")}>
-                    Get Started Free
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="!border-cs-600 !text-cs-200 hover:!bg-cs-800"
-                    onClick={() => openModal("business_type")}
+                    Automate your<br className="hidden md:block" /> {currentTypingText}
+                    <span className="inline-block w-[4px] h-[1em] bg-cs-50 ml-1 -mb-1 animate-pulse"></span>
+                  </motion.h1>
+                  <motion.p
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45, delay: 0.1 }}
+                    className="text-cs-300 text-lg max-w-xl mx-auto mb-10"
                   >
-                    Try a Demo
-                  </Button>
-                </div>
-              </>
-            )}
-          </motion.div>
-        </AnimatePresence>
+                    One app for GST, Udyam, schemes, loans, and every deadline — built for India's 6 crore small businesses.
+                  </motion.p>
+                  <div className="flex gap-4 justify-center flex-wrap">
+                    <Button variant="secondary" size="lg" onClick={() => navigate("/onboarding")}>
+                      Get Started Free
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="!border-cs-600 !text-cs-200 hover:!bg-cs-800"
+                      onClick={() => openModal("business_type")}
+                    >
+                      Try a Demo
+                    </Button>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
@@ -841,8 +862,8 @@ export default function Landing() {
         }
       </section>
 
-      {/* ── FEATURES ── */}
-      <section className="py-28 px-6 bg-slate-50 text-center relative overflow-hidden">
+      {/* ── FEATURES ── FIXED: Added id and scroll-mt-20 */}
+      <section id="features-section" className="scroll-mt-20 py-28 px-6 bg-slate-50 text-center relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0 opacity-50"></div>
         <div className="absolute left-0 right-0 top-10 -z-0 m-auto h-[300px] w-[300px] rounded-full bg-cs-400/20 blur-[80px]"></div>
@@ -900,8 +921,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="py-28 px-6 bg-white text-center relative overflow-hidden">
+      {/* ── HOW IT WORKS ── FIXED: Added id and scroll-mt-20 */}
+      <section id="how-it-works-section" className="scroll-mt-20 py-28 px-6 bg-white text-center relative overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0 opacity-50"></div>
         <div className="absolute left-0 right-0 top-20 -z-0 m-auto h-[250px] w-[400px] rounded-full bg-cs-400/10 blur-[80px]"></div>
@@ -1017,8 +1038,10 @@ export default function Landing() {
         </section>
       )}
 
-      {/* ── PRICING ── */}
-      <PricingSection viewAs={viewAs} navigate={navigate} />
+      {/* ── PRICING ── FIXED: Modified component target below to accept an id wrapper inside it or applied layout adjustments directly within it */}
+      <div id="pricing-section" className="scroll-mt-20">
+        <PricingSection viewAs={viewAs} navigate={navigate} />
+      </div>
 
       {/* ── FINAL CTA ── */}
       <section className="py-16 px-6 bg-cs-900 text-center">
